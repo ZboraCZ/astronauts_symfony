@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <h1>Astronauts</h1>
+        {% if astronauts %}
+            <table id="astronauts-table" class="table table-striped">
+                <thead>
+                    <tr>
+                        <td>Jméno</td>
+                        <td>Superschopnost</td>
+                        <td>Datum narození</td>
+                        <td>Akce</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for astronaut in astronauts %}
+                        <tr>
+                            <td><img src="{{ asset('images/astronaut-profile-pic.png') }}" height="30px" style="margin-right: 10px">
+                                {{ astronaut.name }}
+                            </td>
+                            <td>{{ astronaut.superpower }}</td>
+                            <td>{{ astronaut.birthDate|date('d-m-Y') }}</td>
+                            <td><a class="btn btn-info" href="{{ path('edit-astronaut',{id: astronaut.id}) }}">Upravit</a>
+                            <button class="btn btn-danger" onclick="deleteAstronaut(this)" data-id="{{ astronaut.id }}">Smazat</button> </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        function deleteAstronaut(button) {
+            if(confirm('Opravdu chcete smazat?')){
+                const id = $(button).data('id');
+                $.ajax({
+                    url: `delete-astronaut/${id}`,
+                    method: 'DELETE',
+                    success: function(data){
+                        console.log(data);
+                        location.reload();
+                    }
+                });
+
+            }
+
+        }
+    </script>
+{% endblock %}
